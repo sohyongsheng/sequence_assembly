@@ -1,3 +1,7 @@
+# Things I want to ignore
+tags
+*.swp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
