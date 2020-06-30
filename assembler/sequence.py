@@ -7,8 +7,8 @@ from assembler.nucleic_acid.bases import (
 )
 from assembler.nucleic_acid.nucleotide import Nucleotide
 from assembler.nucleic_acid.sugars import (
-    Ribose, 
     Deoxyribose,
+    Ribose, 
 )
 
 class Sequence:

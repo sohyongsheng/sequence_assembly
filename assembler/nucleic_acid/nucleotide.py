@@ -1,10 +1,13 @@
 from assembler.nucleic_acid.bases import (
+    NitrogenousBase,
     Thymine,
     Uracil,
 )
+from assembler.nucleic_acid.errors import InvalidNucleotide
 from assembler.nucleic_acid.sugars import (
-    Ribose, 
     Deoxyribose,
+    PentoseSugar,
+    Ribose, 
 )
 
 class PhosphateGroup:
@@ -13,11 +16,29 @@ class PhosphateGroup:
 
 class Nucleotide:
     def __init__(self, base, sugar):
-        if isinstance(sugar, Deoxyribose):
-            assert not isinstance(base, Uracil)
-        if isinstance(sugar, Ribose):
-            assert not isinstance(base, Thymine)
+        assert isinstance(base, NitrogenousBase)
+        assert isinstance(sugar, PentoseSugar)
+        if (
+            isinstance(sugar, Deoxyribose) 
+            and isinstance(base, Uracil)
+        ):
+            raise InvalidNucleotide(
+                "Cannot have Uracil in DNA nucleotide."
+            ) 
+        if (
+            isinstance(sugar, Ribose)
+            and isinstance(base, Thymine)
+        ):
+            raise InvalidNucleotide(
+                "Cannot have Thymine in RNA nucleotide"
+            )
         self.base = base
         self.sugar = sugar
-        self.phosphate = PhosphateGroup()
+
+    def __eq__(self, other):
+        return all([
+            self.base == other.base,
+            self.sugar == other.sugar,
+        ])
+        
 
