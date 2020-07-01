@@ -40,5 +40,8 @@ class Nucleotide:
             self.base == other.base,
             self.sugar == other.sugar,
         ])
+
+    def __str__(self):
+        return str(self.base)
         
 
