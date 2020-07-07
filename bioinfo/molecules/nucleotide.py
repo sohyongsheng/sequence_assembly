@@ -1,10 +1,10 @@
-from assembler.nucleic_acid.bases import (
+from bioinfo.molecules.bases import (
     NitrogenousBase,
     Thymine,
     Uracil,
 )
-from assembler.nucleic_acid.errors import InvalidNucleotide
-from assembler.nucleic_acid.sugars import (
+from bioinfo.molecules.errors import InvalidNucleotide
+from bioinfo.molecules.sugars import (
     Deoxyribose,
     PentoseSugar,
     Ribose, 

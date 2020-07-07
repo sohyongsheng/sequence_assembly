@@ -1,4 +1,4 @@
-from assembler.nucleic_acid.sugars import (
+from bioinfo.molecules.sugars import (
     Deoxyribose,
     Ribose, 
 )

@@ -1,9 +1,11 @@
-from assembler.nucleic_acid.sequence import Sequence
+from bioinfo.molecules.sequence import Sequence
+from bioinfo.assembly.overlap import Pair
 
 if __name__ == '__main__':
-    sequence = Sequence('aaaa')
-    print(sequence)
-
-
-
+    # first = Sequence('tcgat')
+    # second = Sequence('atcg')
+    first = Sequence('acg', is_dna = False)
+    second = Sequence('acg', is_dna = False)
+    pair = Pair(first, second)
+    pair.combine()
 

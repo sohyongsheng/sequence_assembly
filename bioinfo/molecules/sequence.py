@@ -1,12 +1,12 @@
-from assembler.nucleic_acid.bases import (
+from bioinfo.molecules.bases import (
     Adenine, 
     Thymine,
     Cytosine,
     Guanine,
     Uracil,
 )
-from assembler.nucleic_acid.nucleotide import Nucleotide
-from assembler.nucleic_acid.sugars import (
+from bioinfo.molecules.nucleotide import Nucleotide
+from bioinfo.molecules.sugars import (
     Deoxyribose,
     Ribose, 
 )
@@ -23,12 +23,12 @@ class Sequence:
     def __init__(self, seq_str, is_dna = True):
         self.seq_str = seq_str
         self.is_dna = is_dna
-        self.nucleotides = self.get_nucleotides(seq_str)
+        self.nucleotides = self.get_nucleotides(self.seq_str)
 
     def get_nucleotides(self, seq_str):
         nucleotides = [
             self.get_nucleotide(c)
-            for c in self.seq_str
+            for c in seq_str
         ]
         return nucleotides
 

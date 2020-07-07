@@ -1,4 +1,4 @@
-from assembler.nucleic_acid.sequence import Sequence
+from bioinfo.molecules.sequence import Sequence
 
 class TestSequence:
     def test_init(self):

@@ -2,7 +2,7 @@
 
 ![CI/CD pipeline](https://github.com/sohyongsheng/sequence_assembly/workflows/CI/CD%20pipeline/badge.svg)
 
-This is a [sequence assembler](https://en.wikipedia.org/wiki/Sequence_assembly) written in Python 3. The motivation of this project is to show my fiancee Yan Ting some best practices and my coding style.
+This is a [sequence assembler](https://en.wikipedia.org/wiki/Sequence_assembly) written in Python 3. The motivation of this project is to show my fiancee Yan Ting some best practices and my coding style, so that she can choose to use these practices depending on the scenario.
 
 ## Getting Started
 
@@ -56,7 +56,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 

@@ -1,18 +1,18 @@
-from assembler.nucleic_acid.bases import (
+import pytest
+
+from bioinfo.molecules.bases import (
     Adenine, 
     Thymine,
     Cytosine,
     Guanine,
     Uracil,
 )
-from assembler.nucleic_acid.errors import InvalidNucleotide
-from assembler.nucleic_acid.nucleotide import Nucleotide
-from assembler.nucleic_acid.sugars import (
+from bioinfo.molecules.errors import InvalidNucleotide
+from bioinfo.molecules.nucleotide import Nucleotide
+from bioinfo.molecules.sugars import (
     Deoxyribose,
     Ribose, 
 )
-
-import pytest
 
 @pytest.fixture
 def adenine():

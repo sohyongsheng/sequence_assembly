@@ -1,4 +1,4 @@
-from assembler.nucleic_acid.bases import (
+from bioinfo.molecules.bases import (
     Adenine, 
     Thymine,
     Cytosine,
@@ -16,7 +16,7 @@ class TestAdenine:
         # Different objects, but still equal.
         another_base = Adenine()
         assert base is not another_base
-        assert base == base
+        assert base == another_base
 
 class TestThymine:
     def test_eq(self):
@@ -28,7 +28,7 @@ class TestThymine:
         # Different objects, but still equal.
         another_base = Thymine()
         assert base is not another_base
-        assert base == base
+        assert base == another_base
 
 class TestCytosine:
     def test_eq(self):
@@ -40,7 +40,7 @@ class TestCytosine:
         # Different objects, but still equal.
         another_base = Cytosine()
         assert base is not another_base
-        assert base == base
+        assert base == another_base
 
 class TestGuanine:
     def test_eq(self):
@@ -52,7 +52,7 @@ class TestGuanine:
         # Different objects, but still equal.
         another_base = Guanine()
         assert base is not another_base
-        assert base == base
+        assert base == another_base
 
 class TestUracil:
     def test_eq(self):
@@ -64,7 +64,7 @@ class TestUracil:
         # Different objects, but still equal.
         another_base = Uracil()
         assert base is not another_base
-        assert base == base
+        assert base == another_base
 
 class TestNitrogenousBase:
     def test_eq(self):
