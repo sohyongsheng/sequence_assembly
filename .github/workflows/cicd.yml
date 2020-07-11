@@ -1,4 +1,4 @@
-name: CI/CD pipeline
+name: CI/CD
 on: [push, pull_request]
 jobs:
   build:
