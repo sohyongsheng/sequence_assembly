@@ -5,3 +5,7 @@
 .PHONY: requirements
 requirements:
 	pip3 freeze | sed '/pkg-resources/d' > requirements.txt
+
+.PHONY: tree
+tree:
+	tree tests bioinfo -P '*.py' --prune --dirsfirst
