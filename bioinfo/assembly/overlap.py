@@ -1,6 +1,7 @@
 import numpy as np
 
 from bioinfo.assembly.errors import InvalidPair
+from bioinfo.molecules.sequence import Sequence
 
 class LargestOverlapFinder:
     def __init__(self):
@@ -42,10 +43,10 @@ class LargestOverlapFinder:
         (indices,) = is_overlap.nonzero()
         if indices:
             last_occurred = indices[-1]
-            overlap_length = last_occurred + 1
+            overlap_len = last_occurred + 1
         else:
-            overlap_length = 0
-        return overlap_length
+            overlap_len = 0
+        return overlap_len
 
 class Pair:
     finder = LargestOverlapFinder()
@@ -57,16 +58,46 @@ class Pair:
             raise InvalidPair(
                 "Cannot compare DNA with RNA sequences."
             )
-
-    def combine(self):
-        to_swap, overlap_len = self.finder.find(
+        self.to_swap, self.overlap_len = self.finder.find(
             self.first.nucleotides, 
             self.second.nucleotides,
         )
-        if to_swap:
-            self.first, self.second = self.second, self.first
-        print(self.first)
-        print(self.second)
-        import pdb; pdb.set_trace()
+
+    def combine(self):
+        if self.to_swap:
+            first, second = self.second, self.first
+        else:
+            first, second = self.first, self.second
+        k = self.overlap_len
+        prefix = first.seq_str[: -k]
+        overlap = first.seq_str[-k: ]
+        suffix = second.seq_str[k: ]
+        combined = Sequence(prefix + overlap + suffix)
+        return combined
+
+    def __str__(self):
+        if self.to_swap:
+            first, second = self.second, self.first
+        else:
+            first, second = self.first, self.second
+        k = self.overlap_len
+        n = total_len = len(first) + len(second) - k
+        prefix = "DNA" if first.is_dna else "RNA"
+        prefix = f"{prefix} pair:"
+        space, arrow = '.', '^'
+        suffix = ''.join([
+            space * (len(first) - k),
+            arrow * k,
+            space * (len(second) - k),
+        ])
+        s = '\n'.join([
+            prefix,
+            first.seq_str.ljust(n),
+            second.seq_str.rjust(n),
+            suffix,
+        ])
+        return s
+
+
 
 

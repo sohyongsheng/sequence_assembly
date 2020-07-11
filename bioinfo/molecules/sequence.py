@@ -25,6 +25,9 @@ class Sequence:
         self.is_dna = is_dna
         self.nucleotides = self.get_nucleotides(self.seq_str)
 
+    def __len__(self):
+        return len(self.seq_str)
+
     def get_nucleotides(self, seq_str):
         nucleotides = [
             self.get_nucleotide(c)
