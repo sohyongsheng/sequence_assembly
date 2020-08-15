@@ -7,46 +7,76 @@ class LargestOverlapFinder:
     def __init__(self):
         pass
 
-    def find(self, first, second):
-        # Modified from longest common substring problem.
-        # See following for tutorial on dynamic programming 
-        # solution:
-        # https://www.youtube.com/watch?v=BysNXJHzCEs
+    # Get indices a, b, c, d of longest substrings first,
+    # such that substring == first[a: b] == second[c: d].
+    # Also returns length of substring.
+    def get_substrings(self, counter):
+        while not np.all(counter == 0):
+            i, j = np.unravel_index(counter.argmax(), counter.shape)
+            length = counter[i, j]
+            for k in range(length):
+                counter[i - k, j - k] = 0
+            b, d = i + 1, j + 1
+            a, c = b - length, d - length
+            indices = a, b, c, d
+            yield indices, length
+
+    def is_overlap(self, indices, first, second):
+        a, b, c, d = indices
+        # First overlaps with second, e.g.
+        # 0123
+        #  1234
+        #  ^^^
+        if b == len(first) and c == 0:
+            return True
+        # Second overlaps with first, e.g.
+        #  1234
+        # 0123
+        #  ^^^
+        elif a == 0 and d == len(second):
+            return True
+        # First is within second, e.g.
+        #  123
+        # 01234
+        #  ^^^
+        elif a == 0 and b == len(first):
+            return True
+        # Second is within first, e.g.
+        # 01234
+        #  123
+        #  ^^^
+        elif c == 0 and d == len(second):
+            return True
+        else:
+            return False
+
+    # Taken from longest common substring problem. See 
+    # following for tutorial on dynamic programming solution:
+    # https://www.youtube.com/watch?v=BysNXJHzCEs
+    def tally_counter(self, first, second):
         num_rows = len(first) + 1
         num_cols = len(second) + 1
-        array = np.zeros((num_rows, num_cols), dtype = int)
+        counter = np.zeros((num_rows, num_cols), dtype = int)
         for i, m in enumerate(first, start = 1):
             for j, n in enumerate(second, start = 1):
                 if m == n:
-                    array[i, j] = array[i - 1, j - 1] + 1
+                    counter[i, j] = counter[i - 1, j - 1] + 1
+        counter = self.remove_first_row_first_col(counter)
+        return counter
 
-        # Where finding longest overlap differs from finding
-        # longest common substring: finding overlap requires
-        # substring to be at the end of the sequence. This means
-        # we need to search for numbers that run diagonally from
-        # first row to last column, or first column to last row.
-        last_row = array[-1, 1:]
-        last_col = array[1:, -1]
-        p = self.get_largest_overlap(last_row)
-        q = self.get_largest_overlap(last_col)
-        if p >= q:
-            to_swap = False
-            overlap_len = p
+    def find(self, first, second):
+        counter = self.tally_counter(first, second)
+        for indices, length in self.get_substrings(counter):
+            a, b, c, d = indices
+            assert first[a: b] == second[c: d]
+            if self.is_overlap(indices, first, second):
+                return indices, length
         else:
-            to_swap = True
-            overlap_len = q
-        return to_swap, overlap_len
+            indices, length = None, 0
+            return indices, length
 
-    def get_largest_overlap(self, x):
-        expected = np.arange(1, len(x) + 1)
-        is_overlap = (x == expected)
-        (indices,) = is_overlap.nonzero()
-        if indices:
-            last_occurred = indices[-1]
-            overlap_len = last_occurred + 1
-        else:
-            overlap_len = 0
-        return overlap_len
+    def remove_first_row_first_col(self, x):
+        return x[1:, 1:]
 
 class Pair:
     finder = LargestOverlapFinder()
@@ -58,46 +88,68 @@ class Pair:
             raise InvalidPair(
                 "Cannot compare DNA with RNA sequences."
             )
-        self.to_swap, self.overlap_len = self.finder.find(
-            self.first.nucleotides, 
-            self.second.nucleotides,
+        self.indices, self.overlap_length = self.finder.find(
+            self.first.seq_str, 
+            self.second.seq_str,
         )
 
     def combine(self):
-        if self.to_swap:
-            first, second = self.second, self.first
+        first = self.first.seq_str
+        second = self.second.seq_str
+        # No overlap, so just concatenate.
+        if self.overlap_length == 0:
+            combined = first + second
+            return Sequence(
+                combined, 
+                is_dna = self.first.is_dna,
+            )
         else:
-            first, second = self.first, self.second
-        k = self.overlap_len
-        prefix = first.seq_str[: -k]
-        overlap = first.seq_str[-k: ]
-        suffix = second.seq_str[k: ]
-        combined = Sequence(prefix + overlap + suffix)
-        return combined
-
-    def __str__(self):
-        if self.to_swap:
-            first, second = self.second, self.first
-        else:
-            first, second = self.first, self.second
-        k = self.overlap_len
-        n = total_len = len(first) + len(second) - k
-        prefix = "DNA" if first.is_dna else "RNA"
-        prefix = f"{prefix} pair:"
-        space, arrow = '.', '^'
-        suffix = ''.join([
-            space * (len(first) - k),
-            arrow * k,
-            space * (len(second) - k),
-        ])
-        s = '\n'.join([
-            prefix,
-            first.seq_str.ljust(n),
-            second.seq_str.rjust(n),
-            suffix,
-        ])
-        return s
-
-
+            a, b, c, d = self.indices
+            # First overlaps with second, e.g.
+            # 0123
+            #  1234
+            #  ^^^
+            if b == len(self.first) and c == 0:
+                prefix = first[:a]
+                assert first[a: b] == second[c: d]
+                overlap = first[a: b]
+                suffix = second[d:]
+                combined = prefix + overlap + suffix
+                return Sequence(
+                    combined, 
+                    is_dna = self.first.is_dna,
+                )
+            # Second overlaps with first, e.g.
+            #  1234
+            # 0123
+            #  ^^^
+            elif a == 0 and d == len(self.second):
+                prefix = second[:c]
+                assert second[c: d] == first[a: b]
+                overlap = second[c: d]
+                suffix = first[b:]
+                combined = prefix + overlap + suffix
+                return Sequence(
+                    combined, 
+                    is_dna = self.first.is_dna,
+                )
+            # First is within second, e.g.
+            #  123
+            # 01234
+            #  ^^^
+            elif a == 0 and b == len(self.first):
+                return Sequence(
+                    second, 
+                    is_dna = self.second.is_dna,
+                )
+            # Second is within first, e.g.
+            # 01234
+            #  123
+            #  ^^^
+            elif c == 0 and d == len(self.second):
+                return Sequence(
+                    first, 
+                    is_dna = self.first.is_dna,
+                )
 
 

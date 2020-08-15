@@ -47,7 +47,5 @@ class Sequence:
             str(nucleotide.base) 
             for nucleotide in self.nucleotides
         )
-        prefix = "DNA" if self.is_dna else "RNA"
-        s = f"{prefix}: {s}"
         return s
 
